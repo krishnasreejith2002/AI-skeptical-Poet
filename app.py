@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-import openai
+from openai import OpenAI
 import textwrap
 
 # ---------------------------
@@ -14,7 +14,7 @@ st.markdown("Ask Kelly anything about AI. She replies as a **skeptical, analytic
 
 # Input for OpenAI API Key (optional for local run)
 if "OPENAI_API_KEY" not in st.secrets:
-    OPENAI_API_KEY = st.text_input("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:", type="password")
+    OPENAI_API_KEY = st.text_input("Enter your OpenAI API key:", type="password")
 else:
     OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
@@ -46,13 +46,12 @@ def local_kelly_poet(user_text: str) -> str:
     ]
     return "\n".join(lines)
 
-
 # Get Kelly's response
 def get_kelly_response(prompt):
     if OPENAI_API_KEY:
         try:
-            openai.api_key = OPENAI_API_KEY
-            response = openai.ChatCompletion.create(
+            client = OpenAI(api_key=OPENAI_API_KEY)
+            response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
                     {"role": "system", "content": SYSTEM_PROMPT},
@@ -61,12 +60,11 @@ def get_kelly_response(prompt):
                 temperature=0.6,
                 max_tokens=350,
             )
-            return response["choices"][0]["message"]["content"].strip()
+            return response.choices[0].message.content.strip()
         except Exception as e:
             return local_kelly_poet(prompt) + f"\n\n[⚠️ Fallback due to error: {e}]"
     else:
         return local_kelly_poet(prompt)
-
 
 # Chat input and output
 user_input = st.text_area("💬 Your question to Kelly:", placeholder="e.g., Can AI ever be truly creative?", height=120)
