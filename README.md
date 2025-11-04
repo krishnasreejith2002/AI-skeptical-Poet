@@ -1,7 +1,9 @@
-# Kelly – The AI Scientist Poet 🤖🎭
+# 🧠 Kelly – The AI Scientist Poet
 
-A skeptical, analytical AI poet built with Streamlit.  
-Ask any question about AI — Kelly responds with poetry that questions claims, highlights limitations, and offers evidence-based advice.
+Kelly is an AI-powered scientist chatbot that answers your questions as **skeptical, analytical poems**.
+
+## 🌐 Live App
+Hosted on [Streamlit Cloud](https://share.streamlit.io)
 
 ## 🚀 Run Locally
 ```bash
