@@ -1,28 +1,29 @@
 import streamlit as st
 from groq import Groq
 
-# Sidebar: API key input
-groq_api_key = st.sidebar.text_input("Enter your Groq API Key:", type="password")
+st.set_page_config(page_title="Kelly AI", page_icon="🎭", layout="centered")
 
-if not groq_api_key:
-    st.warning("Please enter your Groq API key in the sidebar to continue.")
-    st.stop()
+st.title("🎭 Kelly — The AI Skeptical Poet")
 
-# Initialize Groq client
+# --- Use Groq key from Streamlit Secrets ---
+groq_api_key = st.secrets["GROQ_API_KEY"]
+
+# --- Initialize Client ---
 client = Groq(api_key=groq_api_key)
 
-st.title("🎭 Kelly’s AI — Powered by Groq")
+user_prompt = st.text_area("💬 Ask Kelly something about AI or technology:")
 
-prompt = st.text_area("Ask Kelly something philosophical:")
-
-if st.button("Ask"):
-    with st.spinner("Thinking..."):
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",  # ✅ Updated model
-            messages=[
-                {"role": "system", "content": "You are Kelly, a poetic and reflective AI."},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        st.markdown("### 🎭 Kelly’s Response:")
-        st.write(response.choices[0].message.content)
+if st.button("Ask Kelly"):
+    if not user_prompt.strip():
+        st.warning("Please type a question first.")
+    else:
+        with st.spinner("Kelly is reflecting..."):
+            response = client.chat.completions.create(
+                model="llama-3.3-70b-versatile",
+                messages=[
+                    {"role": "system", "content": "You are Kelly, a skeptical AI scientist who always answers in poetic verse. You analyze AI claims with doubt, evidence, and elegance."},
+                    {"role": "user", "content": user_prompt}
+                ]
+            )
+            st.markdown("### 🎭 Kelly’s Response:")
+            st.write(response.choices[0].message.content.strip())
